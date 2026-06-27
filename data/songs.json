@@ -1,0 +1,10 @@
+[
+  {
+    "id": "the-man",
+    "title": "THE MAN",
+    "tuning": "Drop D",
+    "tempo": "92 BPM",
+    "lyrics": "Distant signals across a frozen plain\nWe move like shadows, we carry the name\nA silent ledger, pages full of rust\nThe man who left us, turned our world to dust\n\nHe whispered codes beneath the northern stars\nSlowly unmade the borders, rewrote our scars\nIn the quiet archives, truth bends and folds\nWe learn what we were and what we sold",
+    "notes": "Ejemplo de canción. Editar /data/songs.json para añadir más entradas."
+  }
+]
