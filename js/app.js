@@ -32,16 +32,17 @@ function renderList(list){
     const small = document.createElement('div');small.className='small';small.textContent = `${s.tuning || '—'} • ${s.tempo || '—'}`;meta.appendChild(small);
 
     const controls = document.createElement('div');controls.className='buttons';
-    const openBtn = document.createElement('button');openBtn.className='btn';openBtn.textContent='Abrir';openBtn.title='Abrir archivo';
-    openBtn.addEventListener('click',()=>togglePanel(id));
-    const copyBtn = document.createElement('button');copyBtn.className='btn';copyBtn.textContent='Copiar letras';
+    const openBtn = document.createElement('button');openBtn.className='btn';openBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Abrir</span>';
+    openBtn.title='Abrir archivo';openBtn.setAttribute('aria-expanded','false');
+    openBtn.addEventListener('click',()=>togglePanel());
+    const copyBtn = document.createElement('button');copyBtn.className='btn';copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="9" y="9" width="8" height="8" stroke="currentColor" stroke-width="1.6" rx="1"/></svg><span>Copiar letras</span>';
     copyBtn.addEventListener('click',()=>copyLyrics(s.lyrics));
 
     controls.appendChild(openBtn);controls.appendChild(copyBtn);
 
     entry.appendChild(meta);entry.appendChild(controls);
 
-    const panel = document.createElement('div');panel.className='panel hidden';panel.setAttribute('aria-hidden','true');
+    const panel = document.createElement('div');panel.className='panel';panel.setAttribute('aria-hidden','true');
     const lyrics = document.createElement('div');lyrics.className='lyrics';lyrics.textContent = s.lyrics || '';
     panel.appendChild(lyrics);
     if(s.notes){
@@ -51,22 +52,24 @@ function renderList(list){
     entry.appendChild(panel);
 
     // accessibility: toggle on enter
-    entry.addEventListener('keydown', (ev)=>{if(ev.key==='Enter') togglePanel(s.id)});
+    entry.addEventListener('keydown', (ev)=>{if(ev.key==='Enter' || ev.key===' ') { ev.preventDefault(); togglePanel(); }});
 
     ARCHIVE.appendChild(entry);
 
     // store references
     entry._panel = panel; entry._openBtn = openBtn; entry._id = s.id;
 
-    function togglePanel(id){
-      const isHidden = panel.classList.contains('hidden');
-      if(isHidden){
-        panel.classList.remove('hidden');panel.setAttribute('aria-hidden','false');
-        entry._openBtn.textContent='Cerrar';
+    function togglePanel(){
+      const isOpen = panel.classList.contains('open');
+      if(!isOpen){
+        panel.classList.add('open');panel.setAttribute('aria-hidden','false');
+        openBtn.setAttribute('aria-expanded','true');
+        openBtn.querySelector('span').textContent = 'Cerrar';
         localStorage.setItem('ea.last', s.id);
       }else{
-        panel.classList.add('hidden');panel.setAttribute('aria-hidden','true');
-        entry._openBtn.textContent='Abrir';
+        panel.classList.remove('open');panel.setAttribute('aria-hidden','true');
+        openBtn.setAttribute('aria-expanded','false');
+        openBtn.querySelector('span').textContent = 'Abrir';
         localStorage.removeItem('ea.last');
       }
     }
